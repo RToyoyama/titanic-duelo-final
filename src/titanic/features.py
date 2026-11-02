@@ -68,6 +68,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     out["Deck"] = out["Cabin"].str[0].map(DECK_GROUPS).fillna("U")
     out["TicketGroupSize"] = out.groupby("Ticket")["Ticket"].transform("size")
     out["FarePerPerson"] = out["Fare"] / out["TicketGroupSize"]
+    out["Surname"] = out["Name"].str.split(",").str[0].str.strip()
+    out["FamilyKey"] = out["Surname"] + "_" + out["Ticket"].astype(str).str[:-1]
+    out["IsWomanChild"] = ((out["Sex"] == "female") | (out["Title"] == "Master")).astype(int)
     return out
 
 

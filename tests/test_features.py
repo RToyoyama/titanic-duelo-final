@@ -39,3 +39,17 @@ def test_build_train_test_counts_groups_across_sets(raw_sample):
     assert TARGET not in te.columns
     assert tr[TARGET].dtype == int
     assert te["TicketGroupSize"].iloc[0] == 2
+
+
+def test_build_features_family_columns(raw_sample):
+    out = build_features(raw_sample)
+    assert out["IsWomanChild"].tolist() == [0, 1, 1, 1]
+    assert out["Surname"].iloc[0] == "Braund"
+
+
+def test_family_key_groups_sequential_tickets(raw_sample):
+    family = raw_sample.iloc[:2].assign(
+        Name=["Smith, Mrs. Anna", "Smith, Master. Bob"], Ticket=["345773", "345774"]
+    )
+    out = build_features(family)
+    assert out["FamilyKey"].nunique() == 1
