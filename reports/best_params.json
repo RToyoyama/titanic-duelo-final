@@ -1,0 +1,24 @@
+{
+  "logreg": {
+    "model__C": 0.3
+  },
+  "svm": {
+    "model__C": 3.0,
+    "model__gamma": 0.03
+  },
+  "random_forest": {
+    "model__max_depth": 8,
+    "model__max_features": 0.7,
+    "model__min_samples_leaf": 4,
+    "model__n_estimators": 724
+  },
+  "xgboost": {
+    "model__colsample_bytree": 0.8776807051588262,
+    "model__learning_rate": 0.03573884768117847,
+    "model__max_depth": 3,
+    "model__min_child_weight": 2,
+    "model__n_estimators": 359,
+    "model__reg_lambda": 0.23426581058204046,
+    "model__subsample": 0.9878338511058234
+  }
+}

@@ -31,3 +31,6 @@ baseline:
 
 balance:
 	python -m titanic.balancing
+
+tune:
+	python -m titanic.tuning

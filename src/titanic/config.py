@@ -17,3 +17,4 @@ COMPETITION: Final[str] = "titanic"
 TARGET: Final[str] = "Survived"
 ID_COL: Final[str] = "PassengerId"
 RANDOM_STATE: Final[int] = 42
+BEST_PARAMS_PATH: Final[Path] = REPORTS_DIR / "best_params.json"
