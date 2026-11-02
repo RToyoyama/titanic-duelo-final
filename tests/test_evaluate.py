@@ -1,9 +1,11 @@
 import pandas as pd
+from sklearn.ensemble import VotingClassifier
 from sklearn.model_selection import RepeatedStratifiedKFold
 
 from titanic.config import TARGET
-from titanic.evaluate import evaluate_models, paired_comparison
+from titanic.evaluate import evaluate_models, evaluate_pipelines, paired_comparison
 from titanic.features import build_features
+from titanic.models import build_pipeline
 
 
 def test_evaluate_models_returns_summary_and_folds(raw_sample):
@@ -29,3 +31,17 @@ def test_paired_comparison_win_rate():
     result = paired_comparison(folds)
     assert result.loc["svm", "win_rate"] == round(2 / 3, 4)
     assert result.loc["svm", "mean_diff"] == round(0.0133333, 4)
+
+
+def test_models_without_scores_get_nan_roc_auc(raw_sample):
+    data = build_features(pd.concat([raw_sample] * 10, ignore_index=True))
+    X, y = data.drop(columns=TARGET), data[TARGET]
+    cv = RepeatedStratifiedKFold(n_splits=2, n_repeats=1, random_state=0)
+    hard = VotingClassifier(
+        [("a", build_pipeline("logreg")), ("b", build_pipeline("svm"))], voting="hard"
+    )
+
+    summary, _ = evaluate_pipelines({"hard": hard}, X, y, cv=cv)
+
+    assert pd.isna(summary.loc["hard", "roc_auc"])
+    assert summary.loc["hard", "acc_mean"] > 0

@@ -3,6 +3,7 @@
 from collections.abc import Mapping
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.base import BaseEstimator
@@ -31,6 +32,10 @@ def make_cv(n_splits: int = 5, n_repeats: int = 3) -> RepeatedStratifiedKFold:
     )
 
 
+def _has_scores(estimator: BaseEstimator) -> bool:
+    return hasattr(estimator, "predict_proba") or hasattr(estimator, "decision_function")
+
+
 def evaluate_pipelines(
     pipelines: Mapping[str, BaseEstimator],
     X: pd.DataFrame,
@@ -52,16 +57,22 @@ def evaluate_pipelines(
 
     folds = []
     for label, pipeline in pipelines.items():
-        res = cross_validate(
-            pipeline, X, y, cv=cv, scoring=SCORING, return_train_score=True, n_jobs=-1
+        scoring = (
+            SCORING
+            if _has_scores(pipeline)
+            else {k: v for k, v in SCORING.items() if k != "roc_auc"}
         )
+        res = cross_validate(
+            pipeline, X, y, cv=cv, scoring=scoring, return_train_score=True, n_jobs=-1
+        )
+        n_folds = len(res["test_accuracy"])
         folds.append(
             pd.DataFrame(
                 {
                     "model": label,
-                    "fold": range(len(res["test_accuracy"])),
+                    "fold": range(n_folds),
                     "accuracy": res["test_accuracy"],
-                    "roc_auc": res["test_roc_auc"],
+                    "roc_auc": res.get("test_roc_auc", np.full(n_folds, np.nan)),
                     "f1": res["test_f1"],
                     "train_accuracy": res["train_accuracy"],
                     "fit_time": res["fit_time"],

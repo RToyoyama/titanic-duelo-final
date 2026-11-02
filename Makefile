@@ -34,3 +34,6 @@ balance:
 
 tune:
 	python -m titanic.tuning
+
+ensemble:
+	python -m titanic.ensemble
