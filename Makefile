@@ -1,7 +1,7 @@
 MODEL ?= voting_hard
 MSG ?= $(MODEL) @ $(shell git rev-parse --short HEAD)
 
-.PHONY: install lint format test clean data features predict submit
+.PHONY: install lint format test clean data features predict submit wcg
 
 install:
 	pip install -e ".[dev]"
@@ -47,3 +47,6 @@ predict:
 submit:
 	kaggle competitions submit -c titanic -f data/submissions/$(MODEL).csv -m "$(MSG)"
 	kaggle competitions submissions titanic
+
+wcg:
+	python -m titanic.wcg

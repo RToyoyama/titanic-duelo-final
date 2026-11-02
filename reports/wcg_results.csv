@@ -1,0 +1,7 @@
+model,acc_mean,acc_std,roc_auc,f1,train_acc,fit_time_s,overfit_gap
+voting_hard+wcg,0.8522,0.0164,,0.7915,0.9263,1.5161,0.0741
+voting_hard+wcg_ticket,0.8511,0.0172,,0.79,0.926,1.4385,0.0749
+voting_hard,0.8503,0.0156,,0.7891,0.9144,2.0475,0.0641
+random_forest+wcg,0.8496,0.0185,,0.7902,0.9317,1.2482,0.0821
+random_forest,0.8485,0.0183,0.8894,0.7889,0.92,1.5551,0.0716
+random_forest+wcg_ticket,0.8485,0.0185,,0.7887,0.9314,1.2722,0.083
