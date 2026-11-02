@@ -25,3 +25,6 @@ data:
 
 features:
 	python -m titanic.features
+
+baseline:
+	python -m titanic.evaluate

@@ -1,0 +1,31 @@
+import pandas as pd
+from sklearn.model_selection import RepeatedStratifiedKFold
+
+from titanic.config import TARGET
+from titanic.evaluate import evaluate_models, paired_comparison
+from titanic.features import build_features
+
+
+def test_evaluate_models_returns_summary_and_folds(raw_sample):
+    data = build_features(pd.concat([raw_sample] * 10, ignore_index=True))
+    X, y = data.drop(columns=TARGET), data[TARGET]
+    cv = RepeatedStratifiedKFold(n_splits=2, n_repeats=1, random_state=0)
+
+    summary, folds = evaluate_models(X, y, model_names=["logreg"], cv=cv)
+
+    assert list(summary.index) == ["logreg"]
+    assert {"acc_mean", "acc_std", "overfit_gap"} <= set(summary.columns)
+    assert len(folds) == 2
+
+
+def test_paired_comparison_win_rate():
+    folds = pd.DataFrame(
+        {
+            "model": ["logreg"] * 3 + ["svm"] * 3,
+            "fold": [0, 1, 2] * 2,
+            "accuracy": [0.80, 0.80, 0.80, 0.82, 0.79, 0.83],
+        }
+    )
+    result = paired_comparison(folds)
+    assert result.loc["svm", "win_rate"] == round(2 / 3, 4)
+    assert result.loc["svm", "mean_diff"] == round(0.0133333, 4)
