@@ -33,7 +33,7 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "N", "D", "ANN"]
-ignore = ["D104"]
+ignore = ["D104", "D107", "N803", "N806"]  # N803/N806: convenção sklearn (X maiúsculo)
 unfixable = ["F401"]
 
 [tool.ruff.lint.pydocstyle]
