@@ -1,8 +1,11 @@
 """Duelo de modelos: comparação com validação cruzada estratificada repetida."""
 
+from collections.abc import Mapping
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from sklearn.base import BaseEstimator
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_validate
 
 from titanic.config import FIGURES_DIR, RANDOM_STATE, REPORTS_DIR, TARGET
@@ -28,35 +31,34 @@ def make_cv(n_splits: int = 5, n_repeats: int = 3) -> RepeatedStratifiedKFold:
     )
 
 
-def evaluate_models(
+def evaluate_pipelines(
+    pipelines: Mapping[str, BaseEstimator],
     X: pd.DataFrame,
     y: pd.Series,
-    model_names: list[str] | None = None,
     cv: RepeatedStratifiedKFold | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Avalia os modelos do catálogo com validação cruzada.
+    """Avalia pipelines arbitrários com o mesmo esquema de CV.
 
     Args:
+        pipelines: Dicionário rótulo -> pipeline não ajustado.
         X: Features (saída de `build_train_test`, sem o alvo).
         y: Alvo binário.
-        model_names: Modelos a avaliar; todos do catálogo se None.
         cv: Esquema de CV; `make_cv()` se None.
 
     Returns:
-        Tupla (resumo por modelo, scores por fold).
+        Tupla (resumo por rótulo, scores por fold).
     """
     cv = make_cv() if cv is None else cv
-    names = model_names or list(get_model_specs())
 
     folds = []
-    for name in names:
+    for label, pipeline in pipelines.items():
         res = cross_validate(
-            build_pipeline(name), X, y, cv=cv, scoring=SCORING, return_train_score=True, n_jobs=-1
+            pipeline, X, y, cv=cv, scoring=SCORING, return_train_score=True, n_jobs=-1
         )
         folds.append(
             pd.DataFrame(
                 {
-                    "model": name,
+                    "model": label,
                     "fold": range(len(res["test_accuracy"])),
                     "accuracy": res["test_accuracy"],
                     "roc_auc": res["test_roc_auc"],
@@ -83,6 +85,27 @@ def evaluate_models(
         .round(4)
     )
     return summary, fold_scores
+
+
+def evaluate_models(
+    X: pd.DataFrame,
+    y: pd.Series,
+    model_names: list[str] | None = None,
+    cv: RepeatedStratifiedKFold | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Avalia modelos do catálogo com hiperparâmetros padrão.
+
+    Args:
+        X: Features (saída de `build_train_test`, sem o alvo).
+        y: Alvo binário.
+        model_names: Modelos a avaliar; todos do catálogo se None.
+        cv: Esquema de CV; `make_cv()` se None.
+
+    Returns:
+        Tupla (resumo por modelo, scores por fold).
+    """
+    names = model_names or list(get_model_specs())
+    return evaluate_pipelines({name: build_pipeline(name) for name in names}, X, y, cv)
 
 
 def paired_comparison(fold_scores: pd.DataFrame, reference: str = "logreg") -> pd.DataFrame:

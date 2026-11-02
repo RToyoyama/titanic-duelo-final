@@ -28,3 +28,6 @@ features:
 
 baseline:
 	python -m titanic.evaluate
+
+balance:
+	python -m titanic.balancing

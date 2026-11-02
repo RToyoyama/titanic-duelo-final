@@ -1,0 +1,13 @@
+model,balance,acc_mean,acc_std,f1,roc_auc
+logreg,class_weight,0.8208,0.0201,0.7739,0.8891
+logreg,none,0.8373,0.0153,0.7822,0.8894
+logreg,smote,0.8242,0.0188,0.7762,0.8886
+random_forest,class_weight,0.8197,0.0198,0.7703,0.8805
+random_forest,none,0.8272,0.0167,0.772,0.8808
+random_forest,smote,0.8275,0.0179,0.7734,0.8793
+svm,class_weight,0.8238,0.0181,0.7815,0.8754
+svm,none,0.8286,0.0227,0.7685,0.8809
+svm,smote,0.8241,0.021,0.7795,0.8765
+xgboost,class_weight,0.8331,0.0224,0.7821,0.8781
+xgboost,none,0.8391,0.0214,0.7828,0.8821
+xgboost,smote,0.8279,0.0251,0.7714,0.88
