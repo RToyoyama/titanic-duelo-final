@@ -25,3 +25,10 @@ def raw_sample():
             "Embarked": ["S", "C", "S", "S"],
         }
     )
+
+
+@pytest.fixture
+def featured(raw_sample):
+    from titanic.features import build_features
+
+    return build_features(raw_sample)
