@@ -1,4 +1,4 @@
-.PHONY: install lint format test clean data
+.PHONY: install lint format test clean data features
 
 install:
 	pip install -e ".[dev]"
@@ -22,3 +22,6 @@ data:
 	kaggle competitions download -c titanic -p data/raw
 	python -m zipfile -e data/raw/titanic.zip data/raw/
 	rm data/raw/titanic.zip
+
+features:
+	python -m titanic.features
