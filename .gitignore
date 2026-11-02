@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Ambiente
+.venv/
+.env
+
+# Ferramentas
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Dados (regras do Kaggle proíbem redistribuir; baixamos via API)
+data/raw/*
+data/processed/*
+!data/**/.gitkeep
+
+# Submissões ficam versionadas (histórico de score)
+!data/submissions/
+
+# Modelos (reproduzíveis via código)
+models/*
+!models/.gitkeep
+
+# Credenciais
+kaggle.json
+.kaggle/
+
+# SO / IDE
+.DS_Store
+.vscode/*
+!.vscode/settings.json
