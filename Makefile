@@ -1,4 +1,7 @@
-.PHONY: install lint format test clean data features
+MODEL ?= voting_hard
+MSG ?= $(MODEL) @ $(shell git rev-parse --short HEAD)
+
+.PHONY: install lint format test clean data features predict submit
 
 install:
 	pip install -e ".[dev]"
@@ -37,3 +40,10 @@ tune:
 
 ensemble:
 	python -m titanic.ensemble
+
+predict:
+	python -m titanic.predict
+
+submit:
+	kaggle competitions submit -c titanic -f data/submissions/$(MODEL).csv -m "$(MSG)"
+	kaggle competitions submissions titanic
