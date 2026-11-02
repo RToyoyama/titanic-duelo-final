@@ -1,7 +1,14 @@
 MODEL ?= voting_hard
 MSG ?= $(MODEL) @ $(shell git rev-parse --short HEAD)
+IMAGE ?= titanic-duelo
+DOCKER_RUN = docker run --rm \
+	-v $(CURDIR)/data:/app/data \
+	-v $(CURDIR)/reports:/app/reports \
+	-v $(CURDIR)/models:/app/models \
+	-v $(HOME)/.kaggle:/home/app/.kaggle:ro \
+	$(IMAGE)
 
-.PHONY: install lint format test clean data features predict submit wcg
+.PHONY: install lint format test clean data features predict submit wcg docker-build
 
 install:
 	pip install -e ".[dev]"
@@ -50,3 +57,9 @@ submit:
 
 wcg:
 	python -m titanic.wcg
+
+docker-build:
+	docker build --build-arg UID=$(shell id -u) -t $(IMAGE) .
+
+docker-%:
+	$(DOCKER_RUN) $*
