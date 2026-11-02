@@ -71,6 +71,7 @@ ruff==0.17.3
 scikit-learn==1.9.1
 scipy==1.17.1
 seaborn==0.13.2
+six==1.17.0
 sklearn-compat==0.1.6
 stack-data==0.6.3
 text-unidecode==1.3

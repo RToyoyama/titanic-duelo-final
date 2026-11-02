@@ -1,4 +1,4 @@
-.PHONY: install lint format test clean
+.PHONY: install lint format test clean data
 
 install:
 	pip install -e ".[dev]"
@@ -17,3 +17,8 @@ test:
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	rm -rf .pytest_cache .ruff_cache
+
+data:
+	kaggle competitions download -c titanic -p data/raw
+	python -m zipfile -e data/raw/titanic.zip data/raw/
+	rm data/raw/titanic.zip
